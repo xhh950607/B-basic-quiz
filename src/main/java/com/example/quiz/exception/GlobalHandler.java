@@ -17,4 +17,11 @@ public class GlobalHandler {
     public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getBindingResult().getFieldError().getDefaultMessage());
     }
+
+    @ExceptionHandler(InvalidParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorResponse handleInvalidParameterException(InvalidParameterException ex) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
 }

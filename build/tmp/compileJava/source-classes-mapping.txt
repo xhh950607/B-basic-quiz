@@ -2,13 +2,15 @@ com/example/quiz/QuizApplication.java
  com.example.quiz.QuizApplication
 com/example/quiz/repository/UserRepository.java
  com.example.quiz.repository.UserRepository
-com/example/quiz/api/UserController.java
- com.example.quiz.api.UserController
-com/example/quiz/domain/User.java
- com.example.quiz.domain.User
-com/example/quiz/service/UserService.java
- com.example.quiz.service.UserService
+com/example/quiz/exception/InvalidParameterException.java
+ com.example.quiz.exception.InvalidParameterException
 com/example/quiz/domain/ErrorResponse.java
  com.example.quiz.domain.ErrorResponse
 com/example/quiz/exception/GlobalHandler.java
  com.example.quiz.exception.GlobalHandler
+com/example/quiz/domain/User.java
+ com.example.quiz.domain.User
+com/example/quiz/api/UserController.java
+ com.example.quiz.api.UserController
+com/example/quiz/service/UserService.java
+ com.example.quiz.service.UserService

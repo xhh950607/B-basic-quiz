@@ -63,6 +63,14 @@ class UserControllerTest {
         assertCreateUserFail(user, "用户名不能为空");
     }
 
+    @Test
+    void should_400_when_create_user_given_too_long_name() throws Exception {
+        User user = new User("一个超级长的名字一个超级长的名字一个超级长的名字一个超级长的名字一个超级长的名字一个超级长的名字",
+                20, "http://pic.17qq.com/img_qqtouxiang/51434034.jpeg");
+
+        assertCreateUserFail(user, "用户名过长");
+    }
+
     private void assertCreateUserFail(User user, String expectedErrorMsg) throws Exception {
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
