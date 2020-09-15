@@ -80,6 +80,34 @@ class EducationControllerTest {
         assertCreateEducationFail(education, "年份不能为空");
     }
 
+    @Test
+    void should_400_when_create_education_given_null_title() throws Exception {
+        Education education = new Education(null, null, 2020L, null, "description");
+
+        assertCreateEducationFail(education, "标题不能为空");
+    }
+
+    @Test
+    void should_400_when_create_education_given_empty_title() throws Exception {
+        Education education = new Education(null, null, 2020L, "", "description");
+
+        assertCreateEducationFail(education, "标题不能为空");
+    }
+
+    @Test
+    void should_400_when_create_education_given_null_description() throws Exception {
+        Education education = new Education(null, null, 2020L, "title", null);
+
+        assertCreateEducationFail(education, "描述不能为空");
+    }
+
+    @Test
+    void should_400_when_create_education_given_empty_description() throws Exception {
+        Education education = new Education(null, null, 2020L, "title", "");
+
+        assertCreateEducationFail(education, "描述不能为空");
+    }
+
     private void assertCreateEducationFail(Education education, String expectedErrorMsg) throws Exception {
         mockMvc.perform(post("/users/"+user.getId()+"/educations")
                 .contentType(MediaType.APPLICATION_JSON)

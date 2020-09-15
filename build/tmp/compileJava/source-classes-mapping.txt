@@ -20,7 +20,7 @@ com/example/quiz/service/EducationService.java
  com.example.quiz.service.EducationService
 com/example/quiz/repository/EducationRepository.java
  com.example.quiz.repository.EducationRepository
-com/example/quiz/domain/Education.java
- com.example.quiz.domain.Education
 com/example/quiz/api/EducationController.java
  com.example.quiz.api.EducationController
+com/example/quiz/domain/Education.java
+ com.example.quiz.domain.Education
