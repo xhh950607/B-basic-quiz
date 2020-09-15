@@ -46,7 +46,7 @@ class EducationControllerTest {
 
     @Test
     void should_create_education() throws Exception {
-        Education education = new Education(null, null, 2020, "title", "description");
+        Education education = new Education(null, null, 2020L, "title", "description");
 
         mockMvc.perform(post("/users/" + user.getId() + "/educations")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -61,7 +61,7 @@ class EducationControllerTest {
 
     @Test
     void should_not_found_user_when_create_education_given_invalid_userId() throws Exception {
-        Education education = new Education(null, null, 2020, "title", "description");
+        Education education = new Education(null, null, 2020L, "title", "description");
 
         mockMvc.perform(post("/users/100000/educations")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -71,6 +71,24 @@ class EducationControllerTest {
                 .andExpect(jsonPath("$.error").value("Not Found"))
                 .andExpect(jsonPath("$.message").value("用户不存在"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_400_when_create_education_given_null_year() throws Exception {
+        Education education = new Education(null, null, null, "title", "description");
+
+        assertCreateEducationFail(education, "年份不能为空");
+    }
+
+    private void assertCreateEducationFail(Education education, String expectedErrorMsg) throws Exception {
+        mockMvc.perform(post("/users/"+user.getId()+"/educations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(education)))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value(expectedErrorMsg))
+                .andExpect(status().isBadRequest());
     }
 
 }

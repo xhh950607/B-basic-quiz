@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 public class EducationController {
 
@@ -14,7 +16,7 @@ public class EducationController {
 
     @PostMapping("/users/{userId}/educations")
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@PathVariable long userId, @RequestBody Education education) {
+    public void create(@PathVariable long userId, @RequestBody @Valid Education education) {
         educationService.create(userId, education);
     }
 }
