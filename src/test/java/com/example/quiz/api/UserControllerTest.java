@@ -80,7 +80,7 @@ class UserControllerTest {
 
     @Test
     void should_400_when_create_user_given_avatar_is_null() throws Exception {
-        User user = new User("张三", 16, null);
+        User user = new User("张三", 20, null);
 
         assertCreateUserFail(user, "头像图片链接不能为空");
     }
@@ -90,6 +90,21 @@ class UserControllerTest {
         User user = new User("张三", 20, "");
 
         assertCreateUserFail(user, "头像图片链接不能为空");
+    }
+
+    @Test
+    void should_400_when_create_user_given_too_short_avatar() throws Exception {
+        User user = new User("张三", 20, "1234567");
+
+        assertCreateUserFail(user, "头像图片链接过短");
+    }
+
+    @Test
+    void should_400_when_create_user_given_too_long_avatar() throws Exception {
+        User user = new User("张三", 20,
+                "头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址");
+
+        assertCreateUserFail(user, "头像图片链接过长");
     }
 
     private void assertCreateUserFail(User user, String expectedErrorMsg) throws Exception {
