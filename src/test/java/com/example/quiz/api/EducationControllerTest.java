@@ -150,6 +150,16 @@ class EducationControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void should_not_found_user_when_get_education_list_given_invalid_id() throws Exception {
+        mockMvc.perform(get("/users/100000/educations"))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("用户不存在"))
+                .andExpect(status().isNotFound());
+    }
+
     private void assertCreateEducationFail(Education education, String expectedErrorMsg) throws Exception {
         mockMvc.perform(post("/users/" + user.getId() + "/educations")
                 .contentType(MediaType.APPLICATION_JSON)

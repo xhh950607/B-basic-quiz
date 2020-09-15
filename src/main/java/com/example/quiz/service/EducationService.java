@@ -32,6 +32,8 @@ public class EducationService {
     }
 
     public List<Education> getList(long userId) {
+        if(!userIsExisted(userId))
+            throw new NotFoundUserException();
         return educationRepository.getAllByUserId(userId);
     }
 
