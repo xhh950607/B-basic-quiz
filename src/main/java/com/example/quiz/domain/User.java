@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 @Data
@@ -13,6 +14,7 @@ public class User {
     private Integer id;
     @NotBlank(message = "用户名不能为空")
     private String name;
+    @Min(value = 17, message = "年龄必须大于16")
     private long age;
     private String avatar;
     private String description;

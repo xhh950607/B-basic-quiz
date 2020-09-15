@@ -71,6 +71,13 @@ class UserControllerTest {
         assertCreateUserFail(user, "用户名过长");
     }
 
+    @Test
+    void should_400_when_create_user_given_age_less_than_17() throws Exception {
+        User user = new User("张三", 16, "http://pic.17qq.com/img_qqtouxiang/51434034.jpeg");
+
+        assertCreateUserFail(user, "年龄必须大于16");
+    }
+
     private void assertCreateUserFail(User user, String expectedErrorMsg) throws Exception {
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
