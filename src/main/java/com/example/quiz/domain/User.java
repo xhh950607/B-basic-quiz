@@ -23,4 +23,8 @@ public class User {
     public User(String name, long age, String avatar) {
         this(null, name, age, avatar, null);
     }
+
+    public User(String name, long age, String avatar, String description) {
+        this(null, name, age, avatar, description);
+    }
 }

@@ -13,6 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -29,7 +33,7 @@ class UserControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @AfterEach
-    void clearDown(){
+    void clearDown() {
         userRepository.clear();
     }
 
@@ -44,9 +48,9 @@ class UserControllerTest {
 
         User storedUser = userRepository.getAll().get(0);
         assertNotNull(storedUser.getId());
-        assertEquals(user.getName(),storedUser.getName());
-        assertEquals(user.getAge(),storedUser.getAge());
-        assertEquals(user.getAvatar(),storedUser.getAvatar());
+        assertEquals(user.getName(), storedUser.getName());
+        assertEquals(user.getAge(), storedUser.getAge());
+        assertEquals(user.getAvatar(), storedUser.getAvatar());
     }
 
     @Test
@@ -65,8 +69,7 @@ class UserControllerTest {
 
     @Test
     void should_400_when_create_user_given_too_long_name() throws Exception {
-        User user = new User("一个超级长的名字一个超级长的名字一个超级长的名字一个超级长的名字一个超级长的名字一个超级长的名字",
-                20, "http://pic.17qq.com/img_qqtouxiang/51434034.jpeg");
+        User user = new User(generateStrSpecifiedLength(129), 20, "http://pic.17qq.com/img_qqtouxiang/51434034.jpeg");
 
         assertCreateUserFail(user, "用户名过长");
     }
@@ -94,17 +97,23 @@ class UserControllerTest {
 
     @Test
     void should_400_when_create_user_given_too_short_avatar() throws Exception {
-        User user = new User("张三", 20, "1234567");
+        User user = new User("张三", 20, generateStrSpecifiedLength(7));
 
         assertCreateUserFail(user, "头像图片链接过短");
     }
 
     @Test
     void should_400_when_create_user_given_too_long_avatar() throws Exception {
-        User user = new User("张三", 20,
-                "头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址头像图片链接地址");
+        User user = new User("张三", 20, generateStrSpecifiedLength(513));
 
         assertCreateUserFail(user, "头像图片链接过长");
+    }
+
+    @Test
+    void should_400_when_create_user_given_too_long_description() throws Exception {
+        User user = new User("张三", 20, "头像图片链接地址", generateStrSpecifiedLength(1025));
+
+        assertCreateUserFail(user, "个人介绍信息过长");
     }
 
     private void assertCreateUserFail(User user, String expectedErrorMsg) throws Exception {
@@ -118,4 +127,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message").value(expectedErrorMsg));
     }
 
+    private String generateStrSpecifiedLength(int byteSize) {
+        return IntStream.range(0, byteSize).mapToObj(i -> "a").collect(Collectors.joining());
+    }
 }
