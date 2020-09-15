@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -56,6 +57,20 @@ class EducationControllerTest {
         assertEquals(education.getYear(), stored.getYear());
         assertEquals(education.getTitle(), stored.getTitle());
         assertEquals(education.getDescription(), stored.getDescription());
+    }
+
+    @Test
+    void should_not_found_user_when_create_education_given_invalid_userId() throws Exception {
+        Education education = new Education(null, null, 2020, "title", "description");
+
+        mockMvc.perform(post("/users/100000/educations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(education)))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("用户不存在"))
+                .andExpect(status().isNotFound());
     }
 
 }
