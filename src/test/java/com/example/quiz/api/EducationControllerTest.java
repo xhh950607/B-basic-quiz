@@ -19,6 +19,7 @@ import java.util.stream.IntStream;
 
 import static com.example.quiz.util.StringUtil.generateStrSpecifiedLength;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -124,6 +125,29 @@ class EducationControllerTest {
         Education education = new Education(null, null, 2020L, "title", generateStrSpecifiedLength(4097));
 
         assertCreateEducationFail(education, "描述过长");
+    }
+
+    @Test
+    void should_get_education_list_by_id() throws Exception {
+        Education edu1 = new Education(null, user.getId(), 2020L, "title1", "description1");
+        Education edu2 = new Education(null, user.getId(), 2020L, "title2", "description2");
+        educationRepository.add(edu1);
+        educationRepository.add(edu2);
+
+        long userId_2 = userRepository.add(new User("张三", 20, "头像链接"));
+        educationRepository.add(new Education(null, userId_2, 2020L, "title3", "description3"));
+
+        mockMvc.perform(get("/users/" + user.getId() + "/educations"))
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].userId").value(edu1.getUserId()))
+                .andExpect(jsonPath("$[0].year").value(edu1.getYear()))
+                .andExpect(jsonPath("$[0].title").value(edu1.getTitle()))
+                .andExpect(jsonPath("$[0].description").value(edu1.getDescription()))
+                .andExpect(jsonPath("$[1].userId").value(edu2.getUserId()))
+                .andExpect(jsonPath("$[1].year").value(edu2.getYear()))
+                .andExpect(jsonPath("$[1].title").value(edu2.getTitle()))
+                .andExpect(jsonPath("$[1].description").value(edu2.getDescription()))
+                .andExpect(status().isOk());
     }
 
     private void assertCreateEducationFail(Education education, String expectedErrorMsg) throws Exception {

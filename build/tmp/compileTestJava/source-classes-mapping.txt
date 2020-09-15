@@ -1,6 +1,6 @@
 com/example/quiz/QuizApplicationTests.java
  com.example.quiz.QuizApplicationTests
-com/example/quiz/api/EducationControllerTest.java
- com.example.quiz.api.EducationControllerTest
 com/example/quiz/api/UserControllerTest.java
  com.example.quiz.api.UserControllerTest
+com/example/quiz/api/EducationControllerTest.java
+ com.example.quiz.api.EducationControllerTest

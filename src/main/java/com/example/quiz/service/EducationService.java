@@ -7,6 +7,8 @@ import com.example.quiz.repository.EducationRepository;
 import com.example.quiz.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.example.quiz.util.StringUtil.verifyMaxChars;
 
 @Service
@@ -27,6 +29,10 @@ public class EducationService {
         } else {
             throw new NotFoundUserException();
         }
+    }
+
+    public List<Education> getList(long userId) {
+        return educationRepository.getAllByUserId(userId);
     }
 
     private boolean userIsExisted(long userId) {

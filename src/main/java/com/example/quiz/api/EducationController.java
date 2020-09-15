@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class EducationController {
@@ -18,5 +19,10 @@ public class EducationController {
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@PathVariable long userId, @RequestBody @Valid Education education) {
         educationService.create(userId, education);
+    }
+
+    @GetMapping("/users/{userId}/educations")
+    public List<Education> getList(@PathVariable long userId){
+        return educationService.getList(userId);
     }
 }
