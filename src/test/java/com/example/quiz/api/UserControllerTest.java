@@ -131,6 +131,16 @@ class UserControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void should_404_when_get_user_info_given_invalid_id() throws Exception {
+        mockMvc.perform(get("/users/100000"))
+                .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("用户不存在"))
+                .andExpect(status().isNotFound());
+    }
+
     private void assertCreateUserFail(User user, String expectedErrorMsg) throws Exception {
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)

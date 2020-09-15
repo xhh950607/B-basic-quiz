@@ -24,4 +24,11 @@ public class GlobalHandler {
     public ErrorResponse handleInvalidParameterException(InvalidParameterException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
+
+    @ExceptionHandler(NotFoundUserException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public ErrorResponse handleNotFoundUserException(NotFoundUserException ex) {
+        return new ErrorResponse(HttpStatus.NOT_FOUND, "用户不存在");
+    }
 }

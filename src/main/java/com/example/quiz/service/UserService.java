@@ -2,6 +2,7 @@ package com.example.quiz.service;
 
 import com.example.quiz.domain.User;
 import com.example.quiz.exception.InvalidParameterException;
+import com.example.quiz.exception.NotFoundUserException;
 import com.example.quiz.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,10 @@ public class UserService {
     }
 
     public User getUserById(long id) {
-        return userRepository.getById(id);
+        User user = userRepository.getById(id);
+        if(user==null)
+            throw new NotFoundUserException();
+        return user;
     }
 
     private void validateName(String name) {
