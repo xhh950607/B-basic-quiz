@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-    private Integer id;
+    private Long id;
     @NotBlank(message = "用户名不能为空")
     private String name;
     @Min(value = 17, message = "年龄必须大于16")

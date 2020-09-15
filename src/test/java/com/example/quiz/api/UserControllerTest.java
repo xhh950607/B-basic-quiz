@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -114,6 +115,20 @@ class UserControllerTest {
         User user = new User("张三", 20, "头像图片链接地址", generateStrSpecifiedLength(1025));
 
         assertCreateUserFail(user, "个人介绍信息过长");
+    }
+
+    @Test
+    void should_get_user_info_by_id() throws Exception {
+        User user = new User("张三", 20, "头像链接", "个人简介");
+        long id = userRepository.add(user);
+
+        mockMvc.perform(get("/users/" + id))
+                .andExpect(jsonPath("$.id").value(id))
+                .andExpect(jsonPath("$.name").value(user.getName()))
+                .andExpect(jsonPath("$.age").value(user.getAge()))
+                .andExpect(jsonPath("$.avatar").value(user.getAvatar()))
+                .andExpect(jsonPath("$.description").value(user.getDescription()))
+                .andExpect(status().isOk());
     }
 
     private void assertCreateUserFail(User user, String expectedErrorMsg) throws Exception {

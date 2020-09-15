@@ -22,6 +22,10 @@ public class UserService {
         userRepository.add(user);
     }
 
+    public User getUserById(long id) {
+        return userRepository.getById(id);
+    }
+
     private void validateName(String name) {
         if (!verifyMaxChars(name, NAME_MAX_CHARS))
             throw new InvalidParameterException("用户名过长");
@@ -46,4 +50,5 @@ public class UserService {
     private boolean verifyMinChars(String str, int minChars) {
         return str.getBytes().length >= minChars;
     }
+
 }
