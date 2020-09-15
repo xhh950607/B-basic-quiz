@@ -16,6 +16,7 @@ public class User {
     private String name;
     @Min(value = 17, message = "年龄必须大于16")
     private long age;
+    @NotBlank(message = "头像图片链接不能为空")
     private String avatar;
     private String description;
 

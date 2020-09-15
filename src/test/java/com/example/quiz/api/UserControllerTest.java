@@ -78,6 +78,20 @@ class UserControllerTest {
         assertCreateUserFail(user, "年龄必须大于16");
     }
 
+    @Test
+    void should_400_when_create_user_given_avatar_is_null() throws Exception {
+        User user = new User("张三", 16, null);
+
+        assertCreateUserFail(user, "头像图片链接不能为空");
+    }
+
+    @Test
+    void should_400_when_create_user_given_avatar_is_empty() throws Exception {
+        User user = new User("张三", 20, "");
+
+        assertCreateUserFail(user, "头像图片链接不能为空");
+    }
+
     private void assertCreateUserFail(User user, String expectedErrorMsg) throws Exception {
         mockMvc.perform(post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
