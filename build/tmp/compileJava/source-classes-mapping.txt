@@ -1,5 +1,5 @@
-com/example/quiz/api/UserController.java
- com.example.quiz.api.UserController
+com/example/quiz/repository/EducationRepository.java
+ com.example.quiz.repository.EducationRepository
 com/example/quiz/domain/ErrorResponse.java
  com.example.quiz.domain.ErrorResponse
 com/example/quiz/domain/User.java
@@ -14,13 +14,15 @@ com/example/quiz/exception/GlobalHandler.java
  com.example.quiz.exception.GlobalHandler
 com/example/quiz/exception/NotFoundUserException.java
  com.example.quiz.exception.NotFoundUserException
-com/example/quiz/service/UserService.java
- com.example.quiz.service.UserService
-com/example/quiz/service/EducationService.java
- com.example.quiz.service.EducationService
-com/example/quiz/repository/EducationRepository.java
- com.example.quiz.repository.EducationRepository
-com/example/quiz/api/EducationController.java
- com.example.quiz.api.EducationController
 com/example/quiz/domain/Education.java
  com.example.quiz.domain.Education
+com/example/quiz/service/EducationService.java
+ com.example.quiz.service.EducationService
+com/example/quiz/api/EducationController.java
+ com.example.quiz.api.EducationController
+com/example/quiz/api/UserController.java
+ com.example.quiz.api.UserController
+com/example/quiz/service/UserService.java
+ com.example.quiz.service.UserService
+com/example/quiz/util/StringUtil.java
+ com.example.quiz.util.StringUtil

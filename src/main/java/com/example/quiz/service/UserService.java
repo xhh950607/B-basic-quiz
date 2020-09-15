@@ -6,6 +6,9 @@ import com.example.quiz.exception.NotFoundUserException;
 import com.example.quiz.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import static com.example.quiz.util.StringUtil.verifyMaxChars;
+import static com.example.quiz.util.StringUtil.verifyMinChars;
+
 @Service
 public class UserService {
 
@@ -45,14 +48,6 @@ public class UserService {
     private void validateDescription(String description) {
         if (description != null && !verifyMaxChars(description, DESCRIPTION_MAX_CHARS))
             throw new InvalidParameterException("个人介绍信息过长");
-    }
-
-    private boolean verifyMaxChars(String str, int maxChars) {
-        return str.getBytes().length <= maxChars;
-    }
-
-    private boolean verifyMinChars(String str, int minChars) {
-        return str.getBytes().length >= minChars;
     }
 
 }

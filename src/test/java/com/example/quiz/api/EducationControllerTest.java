@@ -14,6 +14,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static com.example.quiz.util.StringUtil.generateStrSpecifiedLength;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -95,6 +99,13 @@ class EducationControllerTest {
     }
 
     @Test
+    void should_400_when_create_education_given_too_long_title() throws Exception {
+        Education education = new Education(null, null, 2020L, generateStrSpecifiedLength(257), "description");
+
+        assertCreateEducationFail(education, "标题过长");
+    }
+
+    @Test
     void should_400_when_create_education_given_null_description() throws Exception {
         Education education = new Education(null, null, 2020L, "title", null);
 
@@ -108,8 +119,15 @@ class EducationControllerTest {
         assertCreateEducationFail(education, "描述不能为空");
     }
 
+    @Test
+    void should_400_when_create_education_given_too_long_description() throws Exception {
+        Education education = new Education(null, null, 2020L, "title", generateStrSpecifiedLength(4097));
+
+        assertCreateEducationFail(education, "描述过长");
+    }
+
     private void assertCreateEducationFail(Education education, String expectedErrorMsg) throws Exception {
-        mockMvc.perform(post("/users/"+user.getId()+"/educations")
+        mockMvc.perform(post("/users/" + user.getId() + "/educations")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(education)))
                 .andExpect(jsonPath("$.timestamp").isNotEmpty())

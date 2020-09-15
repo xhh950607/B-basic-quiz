@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.example.quiz.util.StringUtil.generateStrSpecifiedLength;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -152,7 +153,4 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message").value(expectedErrorMsg));
     }
 
-    private String generateStrSpecifiedLength(int byteSize) {
-        return IntStream.range(0, byteSize).mapToObj(i -> "a").collect(Collectors.joining());
-    }
 }
