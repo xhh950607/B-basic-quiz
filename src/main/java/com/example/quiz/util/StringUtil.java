@@ -3,6 +3,7 @@ package com.example.quiz.util;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+// GTB: 可以自定义 annotation 来实现
 public class StringUtil {
 
     public static boolean verifyMaxChars(String str, int maxChars) {

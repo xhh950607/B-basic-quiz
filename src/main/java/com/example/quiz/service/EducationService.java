@@ -21,6 +21,15 @@ public class EducationService {
     private static final int DESCRIPTION_MAX_CHARS = 4096;
 
     public void create(long userId, Education education) {
+        // GTB: - 下面这种请，可以先抛异常，比如：
+//        if (!userIsExisted(userId)) {
+//            throw new NotFoundUserException();
+//        }
+//        validateTitle(education.getTitle());
+//        validateDescription(education.getDescription());
+//        education.setUserId(userId);
+//        educationRepository.add(education);
+
         if (userIsExisted(userId)) {
             validateTitle(education.getTitle());
             validateDescription(education.getDescription());

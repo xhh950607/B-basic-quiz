@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
 
+// GTB: - ErrorResponse所在的包不太合适
 @Data
 public class ErrorResponse {
     private Instant timestamp;

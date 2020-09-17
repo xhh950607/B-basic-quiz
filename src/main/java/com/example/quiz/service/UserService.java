@@ -27,6 +27,7 @@ public class UserService {
     }
 
     public User getUserById(long id) {
+        // GTB: 尝试用 Optional 改写一下
         User user = userRepository.getById(id);
         if(user==null)
             throw new NotFoundUserException();
@@ -34,6 +35,7 @@ public class UserService {
     }
 
     private void validateName(String name) {
+        // GTB: 通常 if 只要一句时也建议加上花括号
         if (!verifyMaxChars(name, NAME_MAX_CHARS))
             throw new InvalidParameterException("用户名过长");
     }
