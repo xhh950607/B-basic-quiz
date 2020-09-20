@@ -6,31 +6,34 @@ import com.example.quiz.exception.NotFoundUserException;
 import com.example.quiz.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static com.example.quiz.util.StringUtil.verifyMaxChars;
 import static com.example.quiz.util.StringUtil.verifyMinChars;
 
 @Service
 public class UserService {
 
-    private final UserRepository userRepository = new UserRepository();
+    private final UserRepository userRepository;
 
     private static final int NAME_MAX_CHARS = 128;
     private static final int AVATAR_MIN_CHARS = 8;
     private static final int AVATAR_MAX_CHARS = 512;
     private static final int DESCRIPTION_MAX_CHARS = 1024;
 
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     public void createUser(User user) {
         validateName(user.getName());
         validateAvatar(user.getAvatar());
         validateDescription(user.getDescription());
-        userRepository.add(user);
+        userRepository.save(user);
     }
 
     public User getUserById(long id) {
-        User user = userRepository.getById(id);
-        if(user==null)
-            throw new NotFoundUserException();
-        return user;
+        return userRepository.findById(id).orElseThrow(NotFoundUserException::new);
     }
 
     private void validateName(String name) {

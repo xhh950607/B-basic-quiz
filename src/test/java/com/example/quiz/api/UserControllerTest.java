@@ -31,12 +31,14 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private final UserRepository userRepository = new UserRepository();
+    @Autowired
+    private UserRepository userRepository;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @AfterEach
     void clearDown() {
-        userRepository.clear();
+        userRepository.deleteAll();
     }
 
     @Test
@@ -48,7 +50,7 @@ class UserControllerTest {
                 .content(objectMapper.writeValueAsString(user)))
                 .andExpect(status().isCreated());
 
-        User storedUser = userRepository.getAll().get(0);
+        User storedUser = userRepository.findAll().get(0);
         assertNotNull(storedUser.getId());
         assertEquals(user.getName(), storedUser.getName());
         assertEquals(user.getAge(), storedUser.getAge());
@@ -121,7 +123,7 @@ class UserControllerTest {
     @Test
     void should_get_user_info_by_id() throws Exception {
         User user = new User("张三", 20, "头像链接", "个人简介");
-        long id = userRepository.add(user);
+        long id = userRepository.save(user).getId();
 
         mockMvc.perform(get("/users/" + id))
                 .andExpect(jsonPath("$.id").value(id))

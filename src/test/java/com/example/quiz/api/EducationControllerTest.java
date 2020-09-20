@@ -30,35 +30,36 @@ class EducationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private EducationRepository educationRepository;
 
-    private final UserRepository userRepository = new UserRepository();
-    private final EducationRepository educationRepository = new EducationRepository();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private User user;
 
     @BeforeEach
     void setUp() {
         user = new User("张三", 20, "头像链接");
-        long id = userRepository.add(user);
-        user.setId(id);
+        user = userRepository.save(user);
     }
 
     @AfterEach
     void clearDown() {
-        educationRepository.clear();
-        userRepository.clear();
+        educationRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
     void should_create_education() throws Exception {
-        Education education = new Education(null, null, 2020L, "title", "description");
+        Education education = new Education(2020L, "title", "description");
 
         mockMvc.perform(post("/users/" + user.getId() + "/educations")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(education)))
                 .andExpect(status().isCreated());
 
-        Education stored = educationRepository.getAllByUserId(user.getId()).get(0);
+        Education stored = educationRepository.findAllByUserId(user.getId()).get(0);
         assertEquals(education.getYear(), stored.getYear());
         assertEquals(education.getTitle(), stored.getTitle());
         assertEquals(education.getDescription(), stored.getDescription());
@@ -66,7 +67,7 @@ class EducationControllerTest {
 
     @Test
     void should_not_found_user_when_create_education_given_invalid_userId() throws Exception {
-        Education education = new Education(null, null, 2020L, "title", "description");
+        Education education = new Education(2020L, "title", "description");
 
         mockMvc.perform(post("/users/100000/educations")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -80,62 +81,62 @@ class EducationControllerTest {
 
     @Test
     void should_400_when_create_education_given_null_year() throws Exception {
-        Education education = new Education(null, null, null, "title", "description");
+        Education education = new Education(null, "title", "description");
 
         assertCreateEducationFail(education, "年份不能为空");
     }
 
     @Test
     void should_400_when_create_education_given_null_title() throws Exception {
-        Education education = new Education(null, null, 2020L, null, "description");
+        Education education = new Education(2020L, null, "description");
 
         assertCreateEducationFail(education, "标题不能为空");
     }
 
     @Test
     void should_400_when_create_education_given_empty_title() throws Exception {
-        Education education = new Education(null, null, 2020L, "", "description");
+        Education education = new Education(2020L, "", "description");
 
         assertCreateEducationFail(education, "标题不能为空");
     }
 
     @Test
     void should_400_when_create_education_given_too_long_title() throws Exception {
-        Education education = new Education(null, null, 2020L, generateStrSpecifiedLength(257), "description");
+        Education education = new Education(2020L, generateStrSpecifiedLength(257), "description");
 
         assertCreateEducationFail(education, "标题过长");
     }
 
     @Test
     void should_400_when_create_education_given_null_description() throws Exception {
-        Education education = new Education(null, null, 2020L, "title", null);
+        Education education = new Education(2020L, "title", null);
 
         assertCreateEducationFail(education, "描述不能为空");
     }
 
     @Test
     void should_400_when_create_education_given_empty_description() throws Exception {
-        Education education = new Education(null, null, 2020L, "title", "");
+        Education education = new Education(2020L, "title", "");
 
         assertCreateEducationFail(education, "描述不能为空");
     }
 
     @Test
     void should_400_when_create_education_given_too_long_description() throws Exception {
-        Education education = new Education(null, null, 2020L, "title", generateStrSpecifiedLength(4097));
+        Education education = new Education(2020L, "title", generateStrSpecifiedLength(4097));
 
         assertCreateEducationFail(education, "描述过长");
     }
 
     @Test
     void should_get_education_list_by_id() throws Exception {
-        Education edu1 = new Education(null, user.getId(), 2020L, "title1", "description1");
-        Education edu2 = new Education(null, user.getId(), 2020L, "title2", "description2");
-        educationRepository.add(edu1);
-        educationRepository.add(edu2);
+        Education edu1 = new Education(user.getId(), 2020L, "title1", "description1");
+        Education edu2 = new Education(user.getId(), 2020L, "title2", "description2");
+        educationRepository.save(edu1);
+        educationRepository.save(edu2);
 
-        long userId_2 = userRepository.add(new User("张三", 20, "头像链接"));
-        educationRepository.add(new Education(null, userId_2, 2020L, "title3", "description3"));
+        User user2 = userRepository.save(new User("张三", 20, "头像链接"));
+        educationRepository.save(new Education(user2.getId(), 2020L, "title3", "description3"));
 
         mockMvc.perform(get("/users/" + user.getId() + "/educations"))
                 .andExpect(jsonPath("$.length()").value(2))
