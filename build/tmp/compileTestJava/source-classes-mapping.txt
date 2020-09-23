@@ -1,5 +1,3 @@
-com/example/quiz/api/EducationControllerTest.java
- com.example.quiz.api.EducationControllerTest
 com/example/quiz/QuizApplicationTests.java
  com.example.quiz.QuizApplicationTests
 com/example/quiz/api/UserControllerTest.java
@@ -12,3 +10,15 @@ com/example/quiz/api/UserControllerTest.java
  com.example.quiz.api.UserControllerTest$CreateUser$ReturnBadRequestGivenInvalidParam$Description
  com.example.quiz.api.UserControllerTest$CreateUser$ReturnBadRequestGivenInvalidParam$Name
  com.example.quiz.api.UserControllerTest$GetUserInfoById
+com/example/quiz/api/EducationControllerTest.java
+ com.example.quiz.api.EducationControllerTest
+ com.example.quiz.api.EducationControllerTest$CreateEducation
+ com.example.quiz.api.EducationControllerTest$CreateEducation$RequestIsInvalid
+ com.example.quiz.api.EducationControllerTest$CreateEducation$RequestIsInvalid$InvalidDescription
+ com.example.quiz.api.EducationControllerTest$CreateEducation$RequestIsInvalid$InvalidTitle
+ com.example.quiz.api.EducationControllerTest$CreateEducation$RequestIsInvalid$InvalidUserId
+ com.example.quiz.api.EducationControllerTest$CreateEducation$RequestIsInvalid$NullYear
+ com.example.quiz.api.EducationControllerTest$CreateEducation$RequestIsValid
+ com.example.quiz.api.EducationControllerTest$GetEducationListByUserId
+ com.example.quiz.api.EducationControllerTest$GetEducationListByUserId$GivenInvalidUserId
+ com.example.quiz.api.EducationControllerTest$GetEducationListByUserId$GivenValidUserId

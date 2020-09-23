@@ -1,5 +1,6 @@
 package com.example.quiz.domain;
 
+import com.example.quiz.validator.MaxBytes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,9 +24,13 @@ public class Education {
 
     @NotNull(message = "年份不能为空")
     private Long year;
+
     @NotBlank(message = "标题不能为空")
+    @MaxBytes(value = 256, message="标题过长")
     private String title;
+
     @NotBlank(message = "描述不能为空")
+    @MaxBytes(value = 4096, message="描述过长")
     private String description;
 
     @JsonIgnore

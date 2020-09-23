@@ -1,12 +1,9 @@
 package com.example.quiz.api;
 
-import com.example.quiz.domain.ErrorResponse;
 import com.example.quiz.domain.User;
 import com.example.quiz.exception.NotFoundUserException;
-import com.example.quiz.repository.UserRepository;
 import com.example.quiz.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,16 +11,12 @@ import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
 import static com.example.quiz.util.StringUtil.generateStrSpecifiedLength;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -137,6 +130,7 @@ class UserControllerTest {
                 }
             }
 
+            @Nested
             class Description {
 
                 @Test
@@ -177,13 +171,6 @@ class UserControllerTest {
                     .andExpect(status().isNotFound());
         }
     }
-
-    private ResultActions postCreateUserRequest(User user) throws Exception {
-        return mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(user)));
-    }
-
 
     private void assertCreateUserFail(User user, String expectedErrorMsg) throws Exception {
         mockMvc.perform(post("/users")

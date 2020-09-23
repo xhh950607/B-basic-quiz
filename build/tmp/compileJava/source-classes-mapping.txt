@@ -2,14 +2,14 @@ com/example/quiz/util/StringUtil.java
  com.example.quiz.util.StringUtil
 com/example/quiz/exception/GlobalHandler.java
  com.example.quiz.exception.GlobalHandler
-com/example/quiz/service/UserService.java
- com.example.quiz.service.UserService
+com/example/quiz/validator/MinBytesValidation.java
+ com.example.quiz.validator.MinBytesValidation
 com/example/quiz/domain/ErrorResponse.java
  com.example.quiz.domain.ErrorResponse
 com/example/quiz/exception/NotFoundUserException.java
  com.example.quiz.exception.NotFoundUserException
-com/example/quiz/domain/User.java
- com.example.quiz.domain.User
+com/example/quiz/validator/MaxBytes.java
+ com.example.quiz.validator.MaxBytes
 com/example/quiz/validator/UserGroup.java
  com.example.quiz.validator.UserGroup
  com.example.quiz.validator.UserGroup$AgeMin
@@ -25,21 +25,21 @@ com/example/quiz/QuizApplication.java
  com.example.quiz.QuizApplication
 com/example/quiz/repository/UserRepository.java
  com.example.quiz.repository.UserRepository
-com/example/quiz/service/EducationService.java
- com.example.quiz.service.EducationService
-com/example/quiz/repository/EducationRepository.java
- com.example.quiz.repository.EducationRepository
-com/example/quiz/api/EducationController.java
- com.example.quiz.api.EducationController
-com/example/quiz/domain/Education.java
- com.example.quiz.domain.Education
-com/example/quiz/validator/MinBytesValidation.java
- com.example.quiz.validator.MinBytesValidation
-com/example/quiz/validator/MinBytes.java
- com.example.quiz.validator.MinBytes
-com/example/quiz/validator/MaxBytes.java
- com.example.quiz.validator.MaxBytes
-com/example/quiz/api/UserController.java
- com.example.quiz.api.UserController
 com/example/quiz/validator/MaxBytesValidation.java
  com.example.quiz.validator.MaxBytesValidation
+com/example/quiz/repository/EducationRepository.java
+ com.example.quiz.repository.EducationRepository
+com/example/quiz/validator/MinBytes.java
+ com.example.quiz.validator.MinBytes
+com/example/quiz/service/EducationService.java
+ com.example.quiz.service.EducationService
+com/example/quiz/api/EducationController.java
+ com.example.quiz.api.EducationController
+com/example/quiz/api/UserController.java
+ com.example.quiz.api.UserController
+com/example/quiz/domain/Education.java
+ com.example.quiz.domain.Education
+com/example/quiz/service/UserService.java
+ com.example.quiz.service.UserService
+com/example/quiz/domain/User.java
+ com.example.quiz.domain.User

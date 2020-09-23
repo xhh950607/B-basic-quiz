@@ -34,7 +34,7 @@ public class User {
     @MaxBytes(value=512, message="头像图片链接过长", groups = UserGroup.AvatarMaxBytes.class)
     private String avatar;
 
-    @MaxBytes(value=1025, message="个人介绍信息过长", groups = UserGroup.DescriptionMaxBytes.class)
+    @MaxBytes(value=1024, message="个人介绍信息过长", groups = UserGroup.DescriptionMaxBytes.class)
     private String description;
 
     public User(String name, long age, String avatar) {
