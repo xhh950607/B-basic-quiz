@@ -18,9 +18,6 @@ public class EducationService {
     private final UserRepository userRepository;
     private final EducationRepository educationRepository;
 
-    private static final int TITLE_MAX_CHARS = 256;
-    private static final int DESCRIPTION_MAX_CHARS = 4096;
-
     public EducationService(UserRepository userRepository, EducationRepository educationRepository) {
         this.userRepository = userRepository;
         this.educationRepository = educationRepository;
@@ -28,9 +25,6 @@ public class EducationService {
 
     public void create(long userId, Education education) {
         User user = findUserOrThrowException(userId);
-
-        validateTitle(education.getTitle());
-        validateDescription(education.getDescription());
 
         education.setUserId(user.getId());
         educationRepository.save(education);
@@ -43,15 +37,5 @@ public class EducationService {
 
     private User findUserOrThrowException(long userId){
         return userRepository.findById(userId).orElseThrow(NotFoundUserException::new);
-    }
-
-    private void validateTitle(String title){
-        if(!verifyMaxChars(title, TITLE_MAX_CHARS))
-            throw new InvalidParameterException("标题过长");
-    }
-
-    private void validateDescription(String description){
-        if(!verifyMaxChars(description, DESCRIPTION_MAX_CHARS))
-            throw new InvalidParameterException("描述过长");
     }
 }

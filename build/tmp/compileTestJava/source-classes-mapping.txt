@@ -1,6 +1,14 @@
+com/example/quiz/api/EducationControllerTest.java
+ com.example.quiz.api.EducationControllerTest
 com/example/quiz/QuizApplicationTests.java
  com.example.quiz.QuizApplicationTests
 com/example/quiz/api/UserControllerTest.java
  com.example.quiz.api.UserControllerTest
-com/example/quiz/api/EducationControllerTest.java
- com.example.quiz.api.EducationControllerTest
+ com.example.quiz.api.UserControllerTest$CreateUser
+ com.example.quiz.api.UserControllerTest$CreateUser$RequestIsValid
+ com.example.quiz.api.UserControllerTest$CreateUser$ReturnBadRequestGivenInvalidParam
+ com.example.quiz.api.UserControllerTest$CreateUser$ReturnBadRequestGivenInvalidParam$Age
+ com.example.quiz.api.UserControllerTest$CreateUser$ReturnBadRequestGivenInvalidParam$Avatar
+ com.example.quiz.api.UserControllerTest$CreateUser$ReturnBadRequestGivenInvalidParam$Description
+ com.example.quiz.api.UserControllerTest$CreateUser$ReturnBadRequestGivenInvalidParam$Name
+ com.example.quiz.api.UserControllerTest$GetUserInfoById

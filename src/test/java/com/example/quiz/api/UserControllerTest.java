@@ -1,148 +1,189 @@
 package com.example.quiz.api;
 
+import com.example.quiz.domain.ErrorResponse;
 import com.example.quiz.domain.User;
+import com.example.quiz.exception.NotFoundUserException;
 import com.example.quiz.repository.UserRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.quiz.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.json.JacksonTester;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static com.example.quiz.util.StringUtil.generateStrSpecifiedLength;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(UserController.class)
+@AutoConfigureJsonTesters
 class UserControllerTest {
+
+    @MockBean
+    private UserService userService;
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private UserRepository userRepository;
+    private JacksonTester<User> userJson;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @AfterEach
-    void clearDown() {
-        userRepository.deleteAll();
+    @Nested
+    class CreateUser {
+
+        @Nested
+        class RequestIsValid {
+
+            @Test
+            void should_call_user_service() throws Exception {
+                User user = new User("张三", 20, "http://pic.17qq.com/img_qqtouxiang/51434034.jpeg");
+
+                mockMvc.perform(post("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(user)))
+                        .andExpect(status().isCreated());
+
+                verify(userService).createUser(user);
+            }
+        }
+
+        @Nested
+        class ReturnBadRequestGivenInvalidParam {
+
+            @Nested
+            class Name {
+
+                @Test
+                void is_null() throws Exception {
+                    User user = new User(null, 20, "头像链接");
+
+                    assertCreateUserFail(user, "用户名不能为空");
+                }
+
+                @Test
+                void is_empty_string() throws Exception {
+                    User user = new User("", 20, "头像链接");
+
+                    assertCreateUserFail(user, "用户名不能为空");
+                }
+
+                @Test
+                void too_long() throws Exception {
+                    User user = new User(generateStrSpecifiedLength(129), 20, "头像链接");
+
+                    assertCreateUserFail(user, "用户名过长");
+                }
+            }
+
+            @Nested
+            class Age {
+
+                @Test
+                void less_than_17() throws Exception {
+                    User user = new User("张三", 16, "头像链接");
+
+                    assertCreateUserFail(user, "年龄必须大于16");
+                }
+            }
+
+            @Nested
+            class Avatar {
+
+                @Test
+                void is_null() throws Exception {
+                    User user = new User("张三", 20, null);
+
+                    assertCreateUserFail(user, "头像图片链接不能为空");
+                }
+
+                @Test
+                void is_empty_string() throws Exception {
+                    User user = new User("张三", 20, "");
+
+                    assertCreateUserFail(user, "头像图片链接不能为空");
+                }
+
+                @Test
+                void too_short() throws Exception {
+                    User user = new User("张三", 20, generateStrSpecifiedLength(7));
+
+                    assertCreateUserFail(user, "头像图片链接过短");
+                }
+
+                @Test
+                void too_long() throws Exception {
+                    User user = new User("张三", 20, generateStrSpecifiedLength(513));
+
+                    assertCreateUserFail(user, "头像图片链接过长");
+                }
+            }
+
+            class Description {
+
+                @Test
+                void too_long() throws Exception {
+                    User user = new User("张三", 20, "头像图片链接地址", generateStrSpecifiedLength(1025));
+
+                    assertCreateUserFail(user, "个人介绍信息过长");
+                }
+            }
+        }
     }
 
-    @Test
-    void should_create_user() throws Exception {
-        User user = new User("张三", 20, "http://pic.17qq.com/img_qqtouxiang/51434034.jpeg");
+    @Nested
+    class GetUserInfoById {
 
-        mockMvc.perform(post("/users")
+        @Test
+        void should_return_user_info() throws Exception {
+            User user = new User(1L, "Tom", 20, "avator link", "description");
+            when(userService.getUserById(1L)).thenReturn(user);
+
+            MockHttpServletResponse response = mockMvc.perform(get("/users/1"))
+                    .andExpect(status().isOk())
+                    .andReturn()
+                    .getResponse();
+
+            assertEquals(userJson.write(user).getJson(), response.getContentAsString());
+        }
+
+        @Test
+        void should_return_404_given_invalid_id() throws Exception {
+            when(userService.getUserById(anyLong())).thenThrow(new NotFoundUserException());
+
+            mockMvc.perform(get("/users/1000"))
+                    .andExpect(jsonPath("$.timestamp").isNotEmpty())
+                    .andExpect(jsonPath("$.status").value(404))
+                    .andExpect(jsonPath("$.error").value("Not Found"))
+                    .andExpect(jsonPath("$.message").value("用户不存在"))
+                    .andExpect(status().isNotFound());
+        }
+    }
+
+    private ResultActions postCreateUserRequest(User user) throws Exception {
+        return mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(user)))
-                .andExpect(status().isCreated());
-
-        User storedUser = userRepository.findAll().get(0);
-        assertNotNull(storedUser.getId());
-        assertEquals(user.getName(), storedUser.getName());
-        assertEquals(user.getAge(), storedUser.getAge());
-        assertEquals(user.getAvatar(), storedUser.getAvatar());
+                .content(objectMapper.writeValueAsString(user)));
     }
 
-    @Test
-    void should_400_when_create_user_given_name_null() throws Exception {
-        User user = new User(null, 20, "http://pic.17qq.com/img_qqtouxiang/51434034.jpeg");
-
-        assertCreateUserFail(user, "用户名不能为空");
-    }
-
-    @Test
-    void should_400_when_create_user_given_name_empty() throws Exception {
-        User user = new User("", 20, "http://pic.17qq.com/img_qqtouxiang/51434034.jpeg");
-
-        assertCreateUserFail(user, "用户名不能为空");
-    }
-
-    @Test
-    void should_400_when_create_user_given_too_long_name() throws Exception {
-        User user = new User(generateStrSpecifiedLength(129), 20, "http://pic.17qq.com/img_qqtouxiang/51434034.jpeg");
-
-        assertCreateUserFail(user, "用户名过长");
-    }
-
-    @Test
-    void should_400_when_create_user_given_age_less_than_17() throws Exception {
-        User user = new User("张三", 16, "http://pic.17qq.com/img_qqtouxiang/51434034.jpeg");
-
-        assertCreateUserFail(user, "年龄必须大于16");
-    }
-
-    @Test
-    void should_400_when_create_user_given_avatar_is_null() throws Exception {
-        User user = new User("张三", 20, null);
-
-        assertCreateUserFail(user, "头像图片链接不能为空");
-    }
-
-    @Test
-    void should_400_when_create_user_given_avatar_is_empty() throws Exception {
-        User user = new User("张三", 20, "");
-
-        assertCreateUserFail(user, "头像图片链接不能为空");
-    }
-
-    @Test
-    void should_400_when_create_user_given_too_short_avatar() throws Exception {
-        User user = new User("张三", 20, generateStrSpecifiedLength(7));
-
-        assertCreateUserFail(user, "头像图片链接过短");
-    }
-
-    @Test
-    void should_400_when_create_user_given_too_long_avatar() throws Exception {
-        User user = new User("张三", 20, generateStrSpecifiedLength(513));
-
-        assertCreateUserFail(user, "头像图片链接过长");
-    }
-
-    @Test
-    void should_400_when_create_user_given_too_long_description() throws Exception {
-        User user = new User("张三", 20, "头像图片链接地址", generateStrSpecifiedLength(1025));
-
-        assertCreateUserFail(user, "个人介绍信息过长");
-    }
-
-    @Test
-    void should_get_user_info_by_id() throws Exception {
-        User user = new User("张三", 20, "头像链接", "个人简介");
-        long id = userRepository.save(user).getId();
-
-        mockMvc.perform(get("/users/" + id))
-                .andExpect(jsonPath("$.id").value(id))
-                .andExpect(jsonPath("$.name").value(user.getName()))
-                .andExpect(jsonPath("$.age").value(user.getAge()))
-                .andExpect(jsonPath("$.avatar").value(user.getAvatar()))
-                .andExpect(jsonPath("$.description").value(user.getDescription()))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void should_404_when_get_user_info_given_invalid_id() throws Exception {
-        mockMvc.perform(get("/users/100000"))
-                .andExpect(jsonPath("$.timestamp").isNotEmpty())
-                .andExpect(jsonPath("$.status").value(404))
-                .andExpect(jsonPath("$.error").value("Not Found"))
-                .andExpect(jsonPath("$.message").value("用户不存在"))
-                .andExpect(status().isNotFound());
-    }
 
     private void assertCreateUserFail(User user, String expectedErrorMsg) throws Exception {
         mockMvc.perform(post("/users")
