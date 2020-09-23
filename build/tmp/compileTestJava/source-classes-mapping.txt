@@ -38,3 +38,9 @@ com/example/quiz/repository/EducationRepositoryTest.java
  com.example.quiz.repository.EducationRepositoryTest
  com.example.quiz.repository.EducationRepositoryTest$FindAllByUserId
  com.example.quiz.repository.EducationRepositoryTest$FindAllByUserId$GivenExistedUserId
+com/example/quiz/integration/EducationApiTest.java
+ com.example.quiz.integration.EducationApiTest
+com/example/quiz/integration/UserApiTest.java
+ com.example.quiz.integration.UserApiTest
+ com.example.quiz.integration.UserApiTest$CreateUser
+ com.example.quiz.integration.UserApiTest$GetUserInfo
